@@ -9,10 +9,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import top.catalinali.dataobject.ProductCategory;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * <pre>
- * Description: ProductCategoryRepositoryTest
- * Copyright:	Copyright (c)2017
  * Author:		lllx
  * Version:		1.0
  * Created at:	2018/1/15
@@ -21,6 +22,7 @@ import top.catalinali.dataobject.ProductCategory;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ProductCategoryRepositoryTest {
+
 
     @Autowired
     private ProductCategoryRepository repository;
@@ -37,5 +39,21 @@ public class ProductCategoryRepositoryTest {
         ProductCategory category = new ProductCategory("男生最不爱",6);
         ProductCategory save = repository.save(category);
         Assert.assertNotNull(save);
+    }
+
+    @Test
+    public void findByCatgoryTypeIn() throws Exception {
+        List<Integer> list = Arrays.asList(1,2,3);
+        List<ProductCategory> catgorys = repository.findByCategoryTypeIn(list);
+        Assert.assertNotEquals(0,catgorys.size());
+    }
+
+    @Test
+    public void updateTest(){
+        ProductCategory one = repository.findOne(1);
+        one.setCategoryName("大花花");
+        ProductCategory save = repository.save(one);
+        Assert.assertNotEquals(one,save);
+
     }
 }
