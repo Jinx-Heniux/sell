@@ -17,4 +17,5 @@ import java.util.List;
 public interface ProductInfoReportary extends JpaRepository<ProductInfo,String>{
 
     List<ProductInfo> findByProductStatus(Integer id);
+
 }
