@@ -13,8 +13,6 @@ import java.util.List;
 
 /**
  * <pre>
- * Description:
- * Copyright:	Copyright (c)2017
  * Author:		lllx
  * Version:		1.0
  * Created at:	2018/1/19
