@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/buyer/product")
-public class BuerProductController {
+public class BuyerProductController {
 
     @Autowired
     private ProductService productService;
