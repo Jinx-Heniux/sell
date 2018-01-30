@@ -5,7 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import top.catalinali.dataobject.ProductInfo;
+import top.catalinali.dto.CartDto;
 import top.catalinali.enums.ProductStatusEnum;
+import top.catalinali.enums.ResultEnum;
+import top.catalinali.exception.SellException;
 import top.catalinali.repository.ProductInfoReportary;
 import top.catalinali.service.ProductService;
 
@@ -42,5 +45,23 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductInfo save(ProductInfo info) {
         return reportary.save(info);
+    }
+
+    @Override
+    public void increaseStock(List<CartDto> cartDTOList) {
+
+    }
+
+    @Override
+    public void decreaseStock(List<CartDto> cartDTOList) {
+        for (CartDto cartDto : cartDTOList) {
+            ProductInfo productInfo = reportary.findOne(cartDto.getProductId());
+            if(productInfo == null){
+                throw new SellException(ResultEnum.PRODUCT_STOCK_ERROR);
+            }
+            Integer stock = productInfo.getProductStock() - cartDto.getProductQuentity();
+            productInfo.setProductStock(stock);
+            reportary.save(productInfo);
+        }
     }
 }

@@ -3,6 +3,7 @@ package top.catalinali.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import top.catalinali.dataobject.ProductInfo;
+import top.catalinali.dto.CartDto;
 
 import java.util.List;
 
@@ -27,5 +28,11 @@ public interface ProductService {
     Page<ProductInfo> findAll(Pageable pageable);
 
     ProductInfo save(ProductInfo info);
+
+    //加库存
+    void increaseStock(List<CartDto> cartDTOList);
+
+    //减库存
+    void decreaseStock(List<CartDto> cartDTOList);
 
 }
