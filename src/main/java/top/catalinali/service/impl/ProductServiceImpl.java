@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.catalinali.dataobject.ProductInfo;
 import top.catalinali.dto.CartDto;
 import top.catalinali.enums.ProductStatusEnum;
@@ -48,18 +49,31 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void increaseStock(List<CartDto> cartDTOList) {
-
+        for (CartDto cartDto : cartDTOList) {
+            ProductInfo productInfo = reportary.findOne(cartDto.getProductId());
+            if(productInfo == null){
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
+            }
+            int stock = productInfo.getProductStock() + cartDto.getProductQuentity();
+            productInfo.setProductStock(stock);
+            reportary.save(productInfo);
+        }
     }
 
     @Override
+    @Transactional
     public void decreaseStock(List<CartDto> cartDTOList) {
         for (CartDto cartDto : cartDTOList) {
             ProductInfo productInfo = reportary.findOne(cartDto.getProductId());
             if(productInfo == null){
-                throw new SellException(ResultEnum.PRODUCT_STOCK_ERROR);
+                throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
             }
             Integer stock = productInfo.getProductStock() - cartDto.getProductQuentity();
+            if(stock < 0 ){
+                throw new SellException(ResultEnum.PRODUCT_STOCK_ERROR);
+            }
             productInfo.setProductStock(stock);
             reportary.save(productInfo);
         }

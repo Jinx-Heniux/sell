@@ -1,10 +1,15 @@
 package top.catalinali.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import top.catalinali.converter.OrderMaster2OrderDtoConverter;
 import top.catalinali.dataobject.OrderDetail;
 import top.catalinali.dataobject.OrderMaster;
 import top.catalinali.dataobject.ProductInfo;
@@ -33,6 +38,7 @@ import java.util.stream.Collectors;
  * </pre>
  */
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
@@ -45,6 +51,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderMasterRepository orderMasterRepository;
 
     @Override
+    @Transactional
     public OrderDto create(OrderDto orderDto) {
         String orderId = KeyUtil.genUniqueKey();
         BigDecimal orderAmount = new BigDecimal(BigInteger.ZERO);
@@ -79,31 +86,105 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto findOne(String orderId) {
-        return null;
+        OrderMaster orderMaster = orderMasterRepository.findOne(orderId);
+        if(orderMaster == null){
+            throw new SellException(ResultEnum.ORDER_NOT_EXIST);
+        }
+        List<OrderDetail> details = orderDetailRepository.findByOrderId(orderId);
+        if(details.isEmpty()){
+            throw new SellException(ResultEnum.ORDERDETAIL_NOT_EXIST);
+        }
+        OrderDto dto = new OrderDto();
+        BeanUtils.copyProperties(orderMaster, dto);
+        dto.setOrderDetailList(details);
+        return dto;
     }
 
     @Override
     public Page<OrderDto> findList(String buyerOpenId, Pageable pageable) {
-        return null;
+        Page<OrderMaster> masters = orderMasterRepository.findByBuyerOpenid(buyerOpenId, pageable);
+        List<OrderDto> dtos = OrderMaster2OrderDtoConverter.convert(masters.getContent());
+        return new PageImpl<OrderDto>(dtos, pageable, masters.getTotalElements());
     }
 
     @Override
+    @Transactional
     public OrderDto cancel(OrderDto orderDto) {
-        return null;
+        OrderMaster master = new OrderMaster();
+        //判断订单状态
+        if(!OrderStatusEnum.NEW.getCode().equals(orderDto.getOrderStatus())){
+            log.info("【取消订单】订单状态不正确,orderId={},orderStatus={}",orderDto.getOrderId(),orderDto.getOrderStatus());
+            throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
+        }
+        //修改状态
+        orderDto.setOrderStatus(OrderStatusEnum.CANCEL.getCode());
+        BeanUtils.copyProperties(orderDto,master);
+        OrderMaster orderMaster = orderMasterRepository.save(master);
+        if(orderMaster == null){
+            log.info("【取消订单】取消订单失败，orderMaster={}",orderMaster);
+            throw new SellException(ResultEnum.ORDER_UPDATE_FAIL);
+        }
+        //返回库存
+        if(CollectionUtils.isEmpty(orderDto.getOrderDetailList())){
+            log.info("【取消订单】订单中午商品详情，orderDto={}",orderDto);
+            throw new SellException(ResultEnum.ORDER_DETAIL_EMPTY);
+        }
+        List<CartDto> cartDtos = orderDto.getOrderDetailList().stream().map(e -> new CartDto(e.getProductId(), e.getProductQuantity())).collect(Collectors.toList());
+        productService.increaseStock(cartDtos);
+        //若已支付，则退款
+        if(PayStatusEnum.SUCCESS.equals(orderDto.getPayStatus())){
+        }
+        return orderDto;
     }
 
     @Override
-    public OrderDto finish(OrderDto orderDTO) {
-        return null;
+    public OrderDto finish(OrderDto orderDto) {
+        //判断订单状态
+        if(!OrderStatusEnum.NEW.getCode().equals(orderDto.getOrderStatus())){
+            log.info("【完结订单】订单状态不正确,orderId={},orderStatus={}",orderDto.getOrderId(),orderDto.getOrderStatus());
+            throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
+        }
+        //修改订单状态
+        orderDto.setOrderStatus(OrderStatusEnum.FINISHED.getCode());
+        OrderMaster master = new OrderMaster();
+        BeanUtils.copyProperties(orderDto,master);
+        OrderMaster orderMaster = orderMasterRepository.save(master);
+        if(orderMaster == null){
+            log.info("【完结订单】完结订单失败，orderMaster={}",orderMaster);
+            throw new SellException(ResultEnum.ORDER_UPDATE_FAIL);
+        }
+        return orderDto;
     }
 
     @Override
-    public OrderDto paid(OrderDto orderDTO) {
-        return null;
+    public OrderDto paid(OrderDto orderDto) {
+        //判断订单状态
+        if(!OrderStatusEnum.NEW.getCode().equals(orderDto.getOrderStatus())){
+            log.info("【订单支付完成】订单状态不正确，orderId={}, orderStatus={}",orderDto.getOrderId(),orderDto.getOrderStatus());
+            throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
+        }
+        //判断支付状态
+        if(!PayStatusEnum.WAIT.getCode().equals(orderDto.getOrderStatus())){
+            log.info("【订单支付完成】订单支付状态不正确，orderDto={}",orderDto);
+            throw new SellException(ResultEnum.ORDER_PAY_STATUS_ERROR);
+        }
+        //修改支付状态
+        orderDto.setPayStatus(PayStatusEnum.SUCCESS.getCode());
+        OrderMaster orderMaster = new OrderMaster();
+        BeanUtils.copyProperties(orderDto, orderMaster);
+        OrderMaster updateResult = orderMasterRepository.save(orderMaster);
+        if (updateResult == null) {
+            log.error("【订单支付完成】更新失败, orderMaster={}", orderMaster);
+            throw new SellException(ResultEnum.ORDER_UPDATE_FAIL);
+        }
+
+        return orderDto;
     }
 
     @Override
     public Page<OrderDto> findList(Pageable pageable) {
-        return null;
+        Page<OrderMaster> orderMasters = orderMasterRepository.findAll(pageable);
+        List<OrderDto> dtoList = OrderMaster2OrderDtoConverter.convert(orderMasters.getContent());
+        return new PageImpl<OrderDto>(dtoList,pageable,orderMasters.getTotalElements());
     }
 }

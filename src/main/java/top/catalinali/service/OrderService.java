@@ -24,10 +24,10 @@ public interface OrderService {
     OrderDto cancel(OrderDto orderDto);//取消订单
 
     /** 完结订单. */
-    OrderDto finish(OrderDto orderDTO);
+    OrderDto finish(OrderDto orderDtO);
 
     /** 支付订单. */
-    OrderDto paid(OrderDto orderDTO);
+    OrderDto paid(OrderDto orderDtO);
 
     /** 查询订单列表. */
     Page<OrderDto> findList(Pageable pageable);
