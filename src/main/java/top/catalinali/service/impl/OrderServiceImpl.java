@@ -113,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
         OrderMaster master = new OrderMaster();
         //判断订单状态
         if(!OrderStatusEnum.NEW.getCode().equals(orderDto.getOrderStatus())){
-            log.info("【取消订单】订单状态不正确,orderId={},orderStatus={}",orderDto.getOrderId(),orderDto.getOrderStatus());
+            log.error("【取消订单】订单状态不正确,orderId={},orderStatus={}",orderDto.getOrderId(),orderDto.getOrderStatus());
             throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
         }
         //修改状态
@@ -121,12 +121,12 @@ public class OrderServiceImpl implements OrderService {
         BeanUtils.copyProperties(orderDto,master);
         OrderMaster orderMaster = orderMasterRepository.save(master);
         if(orderMaster == null){
-            log.info("【取消订单】取消订单失败，orderMaster={}",orderMaster);
+            log.error("【取消订单】取消订单失败，orderMaster={}",orderMaster);
             throw new SellException(ResultEnum.ORDER_UPDATE_FAIL);
         }
         //返回库存
         if(CollectionUtils.isEmpty(orderDto.getOrderDetailList())){
-            log.info("【取消订单】订单中午商品详情，orderDto={}",orderDto);
+            log.error("【取消订单】订单中午商品详情，orderDto={}",orderDto);
             throw new SellException(ResultEnum.ORDER_DETAIL_EMPTY);
         }
         List<CartDto> cartDtos = orderDto.getOrderDetailList().stream().map(e -> new CartDto(e.getProductId(), e.getProductQuantity())).collect(Collectors.toList());
@@ -141,7 +141,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto finish(OrderDto orderDto) {
         //判断订单状态
         if(!OrderStatusEnum.NEW.getCode().equals(orderDto.getOrderStatus())){
-            log.info("【完结订单】订单状态不正确,orderId={},orderStatus={}",orderDto.getOrderId(),orderDto.getOrderStatus());
+            log.error("【完结订单】订单状态不正确,orderId={},orderStatus={}",orderDto.getOrderId(),orderDto.getOrderStatus());
             throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
         }
         //修改订单状态
@@ -150,7 +150,7 @@ public class OrderServiceImpl implements OrderService {
         BeanUtils.copyProperties(orderDto,master);
         OrderMaster orderMaster = orderMasterRepository.save(master);
         if(orderMaster == null){
-            log.info("【完结订单】完结订单失败，orderMaster={}",orderMaster);
+            log.error("【完结订单】完结订单失败，orderMaster={}",orderMaster);
             throw new SellException(ResultEnum.ORDER_UPDATE_FAIL);
         }
         return orderDto;
@@ -160,7 +160,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto paid(OrderDto orderDto) {
         //判断订单状态
         if(!OrderStatusEnum.NEW.getCode().equals(orderDto.getOrderStatus())){
-            log.info("【订单支付完成】订单状态不正确，orderId={}, orderStatus={}",orderDto.getOrderId(),orderDto.getOrderStatus());
+            log.error("【订单支付完成】订单状态不正确，orderId={}, orderStatus={}",orderDto.getOrderId(),orderDto.getOrderStatus());
             throw new SellException(ResultEnum.ORDER_STATUS_ERROR);
         }
         //判断支付状态
