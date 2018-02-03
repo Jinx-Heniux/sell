@@ -37,6 +37,10 @@ public class BuyerProductController {
     @Autowired
     private CategoryService categoryService;
 
+    /**
+     * 商品列表
+     * @return
+     */
     @GetMapping("/list")
     public BaseResponse list(){
         //查询所有上架商品
