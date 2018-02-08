@@ -61,7 +61,7 @@ public class BuyerOrderController {
         }
         OrderDto result = orderService.create(orderDto);
         Map<String,String> map = new HashMap<>();
-        map.put("productId", result.getOrderId());
+        map.put("orderId", result.getOrderId());
 
         return ResultVOUtil.success(map);
     }
