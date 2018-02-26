@@ -1,6 +1,7 @@
 package top.catalinali.service;
 
 import com.lly835.bestpay.model.PayResponse;
+import com.lly835.bestpay.model.RefundResponse;
 import top.catalinali.dto.OrderDto;
 
 /**
@@ -13,4 +14,8 @@ import top.catalinali.dto.OrderDto;
 public interface PayService {
 
     PayResponse create(OrderDto orderDto);
+
+    PayResponse notify(String notifyData);
+
+    RefundResponse refund(OrderDto orderDto);
 }

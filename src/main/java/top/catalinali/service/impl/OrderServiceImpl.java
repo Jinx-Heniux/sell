@@ -22,6 +22,7 @@ import top.catalinali.exception.SellException;
 import top.catalinali.repository.OrderDetailRepository;
 import top.catalinali.repository.OrderMasterRepository;
 import top.catalinali.service.OrderService;
+import top.catalinali.service.PayService;
 import top.catalinali.service.ProductService;
 import top.catalinali.util.KeyUtil;
 
@@ -43,6 +44,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private PayService payService;
 
     @Autowired
     private OrderDetailRepository orderDetailRepository;
@@ -133,6 +137,7 @@ public class OrderServiceImpl implements OrderService {
         productService.increaseStock(cartDtos);
         //若已支付，则退款
         if(PayStatusEnum.SUCCESS.equals(orderDto.getPayStatus())){
+            payService.refund(orderDto);
         }
         return orderDto;
     }
