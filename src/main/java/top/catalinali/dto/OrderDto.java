@@ -1,8 +1,12 @@
 package top.catalinali.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import top.catalinali.dataobject.OrderDetail;
+import top.catalinali.enums.OrderStatusEnum;
+import top.catalinali.enums.PayStatusEnum;
+import top.catalinali.util.EnumUtil;
 import top.catalinali.util.serializer.Date2LongSerializer;
 
 import java.math.BigDecimal;
@@ -53,4 +57,14 @@ public class OrderDto {
     private Date updateTime;
 
     List<OrderDetail> orderDetailList;
+
+    @JsonIgnore
+    public OrderStatusEnum getOrderStatusEnum(){
+        return EnumUtil.getByCode(this.orderStatus,OrderStatusEnum.class);
+    }
+
+    @JsonIgnore
+    public PayStatusEnum getPayStatusEnum(){
+        return EnumUtil.getByCode(this.payStatus, PayStatusEnum.class);
+    }
 }

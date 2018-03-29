@@ -11,7 +11,8 @@ import top.catalinali.enums.CodeEnum;
  * </pre>
  */
 public class EnumUtil {
-    public <T extends CodeEnum> T getByCode(Integer code, Class<T> enumClass){
+
+    public static <T extends CodeEnum> T getByCode(Integer code, Class<T> enumClass){
         for (T each : enumClass.getEnumConstants()) {
             if(code.equals(each.getCode())){
                 return each;
