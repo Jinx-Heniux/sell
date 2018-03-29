@@ -22,10 +22,10 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ProductInfoReportaryTest {
+public class ProductInfoRepositoryTest {
 
     @Autowired
-    private ProductInfoReportary reportary;
+    private ProductInfoRepository reportary;
 
     @Test
     public void saveTest(){

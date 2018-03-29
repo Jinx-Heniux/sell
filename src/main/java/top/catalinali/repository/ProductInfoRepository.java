@@ -14,7 +14,7 @@ import java.util.List;
  * Created at:	2018/1/19
  * </pre>
  */
-public interface ProductInfoReportary extends JpaRepository<ProductInfo,String>{
+public interface ProductInfoRepository extends JpaRepository<ProductInfo,String>{
 
     List<ProductInfo> findByProductStatus(Integer id);
 

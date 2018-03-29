@@ -1,10 +1,15 @@
 package top.catalinali.dataobject;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
+import top.catalinali.enums.ProductStatusEnum;
+import top.catalinali.util.EnumUtil;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <pre>
@@ -17,6 +22,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Data
+@DynamicUpdate
 public class ProductInfo {
 
     @Id
@@ -42,5 +48,14 @@ public class ProductInfo {
 
     /** 类目编号. */
     private Integer categoryType;
+
+    private Date createTime;
+
+    private Date updateTime;
+
+    @JsonIgnore
+    public ProductStatusEnum getProductStatusEnum(){
+        return EnumUtil.getByCode(this.productStatus, ProductStatusEnum.class);
+    }
 
 }
