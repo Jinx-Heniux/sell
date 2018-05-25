@@ -26,7 +26,7 @@ public class SellerServiceImplTest {
     @Test
     public void findSellInfoByOpenid() throws Exception {
         SellerInfo sellerInfo = sellerService.findSellInfoByOpenid(openid);
-        Assert.assertNotNull(openid,sellerInfo.getOpenId());
+        Assert.assertNotNull(openid,sellerInfo.getOpenid());
     }
 
 }

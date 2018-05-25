@@ -25,7 +25,7 @@ public class SellerInfoRepositoryTest {
         sellerInfo.setSellerId(KeyUtil.genUniqueKey());
         sellerInfo.setUsername("admin");
         sellerInfo.setPassword("admin");
-        sellerInfo.setOpenId("abc");
+        sellerInfo.setOpenid("abc");
         SellerInfo result = repository.save(sellerInfo);
         Assert.assertNotNull(result);
     }
@@ -33,6 +33,6 @@ public class SellerInfoRepositoryTest {
     @Test
     public void findByOpenid() throws Exception {
         SellerInfo result = repository.findByOpenid("abc");
-        Assert.assertEquals("abc",result.getOpenId());
+        Assert.assertEquals("abc",result.getOpenid());
     }
 }

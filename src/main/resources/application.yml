@@ -21,6 +21,8 @@ wechat:
   mchKey: 06C56A89949D617xxxxxxxxxxx
   keyPath: /var/weixin_cert/h5.p12
   notifyUrl: http://catalinali.ngrok.xiaomiqiu.cn/sell/pay/notify
+  templateId:
+    orderStatus: Y0VVTKz-enOuAOj_Sd6dG0JNHD4kLJuZIHFN5A3QTGg
 
 projectUrl:
   wechatMpAuthorize: http://catalinali.ngrok.xiaomiqiu.cn

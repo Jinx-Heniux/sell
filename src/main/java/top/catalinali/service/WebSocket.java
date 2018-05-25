@@ -1,7 +1,6 @@
 package top.catalinali.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
@@ -22,7 +21,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Slf4j
 public class WebSocket {
 
-    @Autowired
     private Session session;
 
     private static CopyOnWriteArraySet<WebSocket> webSocketSet = new CopyOnWriteArraySet<>();

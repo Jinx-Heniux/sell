@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import top.catalinali.config.ProjectUrlConfig;
 import top.catalinali.enums.ResultEnum;
 import top.catalinali.exception.SellException;
+import top.catalinali.service.PushMessageService;
 
 import java.net.URLEncoder;
 
@@ -37,10 +38,13 @@ public class WechatController {
    @Autowired
    private ProjectUrlConfig projectUrlConfig;
 
+   @Autowired
+   private PushMessageService pushMessage;
+
     @GetMapping("/authorize")
     public String authorize(@RequestParam("returnUrl")String returnUrl) {
         String url = projectUrlConfig.getWechatMpAuthorize() + "/sell/wechat/userinfo";
-        String redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAuth2Scope.SNSAPI_USERINFO, URLEncoder.encode(returnUrl));
+        String redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAUTH2_SCOPE_BASE, URLEncoder.encode(returnUrl));
         return "redirect:"+redirectUrl;
     }
 
@@ -61,7 +65,7 @@ public class WechatController {
     @GetMapping("/qrAuthorize")
     public String qrAuthorize(@RequestParam("returnUrl")String returnUrl) {
         String url = projectUrlConfig.getWechatOpenAuthorize() + "/sell/wechat/qrUserinfo";
-        String redirectUrl = wxOpenService.oauth2buildAuthorizationUrl(url, WxConsts.QrConnectScope.SNSAPI_LOGIN, URLEncoder.encode(returnUrl));
+        String redirectUrl = wxOpenService.buildQrConnectUrl(url, WxConsts.QRCONNECT_SCOPE_SNSAPI_LOGIN, URLEncoder.encode(returnUrl));
         return "redirect:"+redirectUrl;
     }
 
