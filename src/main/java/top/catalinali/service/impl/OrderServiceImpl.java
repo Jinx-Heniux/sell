@@ -24,6 +24,7 @@ import top.catalinali.repository.OrderMasterRepository;
 import top.catalinali.service.OrderService;
 import top.catalinali.service.PayService;
 import top.catalinali.service.ProductService;
+import top.catalinali.service.WebSocket;
 import top.catalinali.util.KeyUtil;
 
 import java.math.BigDecimal;
@@ -53,6 +54,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderMasterRepository orderMasterRepository;
+
+    @Autowired
+    private WebSocket webSocket;
 
     @Override
     @Transactional
@@ -85,6 +89,10 @@ public class OrderServiceImpl implements OrderService {
         //4. 扣库存
         List<CartDto> cartDtos = orderDto.getOrderDetailList().stream().map(e -> new CartDto(e.getProductId(), e.getProductQuantity())).collect(Collectors.toList());
         productService.decreaseStock(cartDtos);
+
+        //发送websocket消息
+        webSocket.sendMessage(orderDto.getOrderId());
+
         return orderDto;
     }
 

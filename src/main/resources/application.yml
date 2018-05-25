@@ -25,4 +25,4 @@ wechat:
 projectUrl:
   wechatMpAuthorize: http://catalinali.ngrok.xiaomiqiu.cn
   wechatOpenAuthorize: http://catalinali.ngrok.xiaomiqiu.cn
-  sell:
+  sell: http://catalinali.ngrok.xiaomiqiu.cn

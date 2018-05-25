@@ -42,7 +42,7 @@ public class BuyerProductController {
      * @return
      */
     @GetMapping("/list")
-    public BaseResponse list(){
+    public BaseResponse<List<ProductVO>> list(){
         //查询所有上架商品
         List<ProductInfo> upAll = productService.findUpAll();
         //查询所有上架商品的类目
