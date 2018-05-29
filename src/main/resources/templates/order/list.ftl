@@ -108,7 +108,7 @@
     <script>
         var websocket = null;
         if('WebSocket' in window) {
-            websocket = new WebSocket('ws://catalinali.ngrok.xiaomiqiu.cn/sell/webSocket');
+            websocket = new WebSocket('ws://localhost:8090/sell/webSockets');
         }else {
             alert('该浏览器不支持websocket!');
         }

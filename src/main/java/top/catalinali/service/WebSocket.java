@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @Modefied by:
  */
 @Component
-@ServerEndpoint("/webSocket")
+@ServerEndpoint("/webSockets")
 @Slf4j
 public class WebSocket {
 
@@ -53,6 +53,5 @@ public class WebSocket {
             }
         }
     }
-
 
 }
