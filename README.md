@@ -18,15 +18,15 @@
 ### Spring Boot
 - SpringBoot + JPA
 - SpringBoot + Mybatis
-- SpringBoot + Redis （待完成）
-- SpringBoot + WebSocket（待完成）
+- SpringBoot + Redis
+- SpringBoot + WebSocket
 
 ### Wechat
 - 微信授权登录
-- 模板消息推送（待完成）
+- 模板消息推送
 - 支付与退款
 
-### Redis（待完成）
+### Redis
 - Jedis的相关操作
 - 分布式Session
 - 分布式锁
